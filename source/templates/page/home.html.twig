@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+{% endblock body %}
+{% block custom_javascripts %}
+   {# <script>
+        const eventSource = new EventSource("{{ mercure('https://localhost/books/1')|escape('js') }}");
+        eventSource.onmessage = event => {
+            alert('Hello');
+            console.log(JSON.parse(event.data));
+        }
+    </script>#}
+
+    <script>
+        const eventSource = new EventSource("{{ mercure('https://localhost/books/1', { subscribe: 'https://localhost/books/1' })|escape('js') }}", {
+            withCredentials: true
+        });
+
+        eventSource.onmessage = event => {
+            alert('Hello');
+            console.log(JSON.parse(event.data));
+        }
+    </script>
+
+{% endblock custom_javascripts %}
