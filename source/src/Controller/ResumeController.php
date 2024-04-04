@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Attachment;
-use App\File\Uploader\DefaultFileUploader;
+use App\File\Downloader\FileDownloaderInterface;
 use App\File\Uploader\FileUploaderInterface;
 use App\Form\Type\ResumeUploadType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class ResumeController extends AbstractController
 {
     #[Route('/resume', name: 'app_resume')]
-    public function index(Request $request, FileUploaderInterface $uploader): Response
+    public function index(Request $request, FileUploaderInterface $uploader, FileDownloaderInterface $downloader): Response
     {
         $attachment = new Attachment();
         $form = $this->createForm(ResumeUploadType::class, $attachment);
@@ -22,6 +22,7 @@ class ResumeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('attachment')->getData();
             $uploader->upload($file);
+
             return $this->redirectToRoute('app_resume');
         }
 
