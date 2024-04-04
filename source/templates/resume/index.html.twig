@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% block title %}Hello ResumeController!{% endblock %}
+{% block body %}
+    {{ form_start(form) }}
+    {{ form_row(form) }}
+    <button type="submit">
+        Upload
+    </button>
+    {{ form_end(form) }}
+    <p><img src="https://placehold.co/300" id="holder"/></p>
+{% endblock %}
+{% block custom_javascripts %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        const eventSource = new EventSource("{{ mercure('http://localhost/books/1', { subscribe: 'http://localhost/books/1' })|escape('js') }}", {
+            withCredentials: true
+        });
+        eventSource.onmessage = event => {
+            let data = JSON.parse(event.data);
+            $('#holder').attr('src', data.src);
+        }
+    </script>
+
+{% endblock custom_javascripts %}

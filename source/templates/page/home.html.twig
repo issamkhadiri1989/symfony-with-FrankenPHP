@@ -12,7 +12,7 @@
     </script>#}
 
     <script>
-        const eventSource = new EventSource("{{ mercure('https://localhost/books/1', { subscribe: 'https://localhost/books/1' })|escape('js') }}", {
+        const eventSource = new EventSource("{{ mercure('http://localhost/books/1', { subscribe: 'http://localhost/books/1' })|escape('js') }}", {
             withCredentials: true
         });
 

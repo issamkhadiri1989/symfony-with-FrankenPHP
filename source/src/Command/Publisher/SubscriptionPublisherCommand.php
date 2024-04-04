@@ -22,7 +22,7 @@ class SubscriptionPublisherCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->publisher->publish();
+        $this->publisher->publish('http://localhost/books/1', \json_encode(['status' => 'OutOfStock']));
 
         return self::SUCCESS;
     }

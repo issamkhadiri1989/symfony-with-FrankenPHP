@@ -4,5 +4,5 @@ namespace App\Server\Mercure\Publisher;
 
 interface PublisherInterface
 {
-    public function publish(): void;
+    public function publish(string|array $topics, string $payload): void;
 }

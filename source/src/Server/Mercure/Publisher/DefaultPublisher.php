@@ -13,13 +13,9 @@ final class DefaultPublisher implements PublisherInterface
     {
     }
 
-    public function publish(): void
+    public function publish(string|array $topics, string $payload): void
     {
-        $update = new Update(
-            'https://localhost/books/1',
-            \json_encode(['status' => 'OutOfStock']),
-            private: true,
-        );
+        $update = new Update($topics, $payload, private: true);
 
         $this->hub->publish($update);
     }
