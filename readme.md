@@ -7,3 +7,6 @@ credentials : access1234 / secret1234
 
 http://localhost:8000/
 
+# Uploading file architecture
+
+![](./doc/doc1.png)

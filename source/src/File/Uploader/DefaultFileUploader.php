@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\File\Uploader;
 
 use App\Server\Mercure\Publisher\PublisherInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Component\DependencyInjection\Attribute\Target;
