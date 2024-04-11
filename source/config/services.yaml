@@ -33,3 +33,6 @@ services:
         credentials:
           key: 'eb3VQiR72MkcQ3adUTGD'
           secret: 'pcHhiZRnfcMHfitOmk3o9kXucORMPlWQdXjPAguM'
+
+  App\Elasticsearch\Finder\ArticleFinder:
+    arguments: ["@fos_elastica.index.articles"]

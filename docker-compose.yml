@@ -33,7 +33,6 @@ services:
   #      SUBSCRIBER_JWT_KEY: "!ChangeThisMercureHubJWTSecretKey!"
 
   database:
-    container_name: "database"
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
       interval: 5s
@@ -53,7 +52,6 @@ services:
       - inner_net
 
   myadmin:
-    container_name: "phpmyadmin"
     image: phpmyadmin/phpmyadmin:5
     environment:
       PMA_HOST: database
@@ -90,7 +88,6 @@ services:
     #      - '/data:/home/user'
 
   mercure:
-    container_name: "mercure"
     networks:
       - inner_net
     image: dunglas/mercure
@@ -142,8 +139,38 @@ services:
     #    networks:
     #      - inner_net
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - inner_net
+    ports:
+      - 9200:9200
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  kibana:
+    depends_on:
+      - elasticsearch
+    image: docker.elastic.co/kibana/kibana:8.13.1
+    volumes:
+      - kibana-data:/usr/share/kibana/data
+    networks:
+      - inner_net
+    ports:
+      - 5601:5601
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
   minio:
-    container_name: "minio"
     image: minio/minio
     networks:
       - inner_net
@@ -158,7 +185,6 @@ services:
       - 9001:9001
 
   http:
-    container_name: "http"
     build:
       context: .
       dockerfile: ./docker/server/Dockerfile
@@ -237,6 +263,9 @@ volumes:
   caddy_data:
   caddy_config:
   dbdata6:
-
+  elasticsearch-data:
+    driver: local
+  kibana-data:
+    driver: local
 networks:
   inner_net:
