@@ -1,0 +1,14 @@
+controllers:
+  resource:
+    path: ../../src/Controller/
+    namespace: App\Controller
+  type: attribute
+#  prefix: '/{_locale}'
+  requirements:
+    _locale: 'en|fr'
+  defaults:
+    _locale: 'fr'
+  trailing_slash_on_root: false
+
+regular_homepage:
+  alias: app_homepage

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <strong>{{ app.request.locale }}</strong>
+    <br />
+    {{ dump(app.current_route )}}
+    <br />
+    <dl>
+        <dt>Route</dt>
+        <dd> {{ url('about') }}</dd>
+    </dl>
+{% endblock %}

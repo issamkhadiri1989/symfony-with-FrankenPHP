@@ -1,11 +1,60 @@
-controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+#controllers:
+#    resource:
+#        path: ../src/Controller/
+#        namespace: App\Controller
+#    type: attribute
 
 app_homepage:
     controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
     path: '/'
     defaults:
         template: 'page/home.html.twig'
+
+dev_home_dashboard:
+    alias: dev_homepage
+    deprecated:
+        package: 'acme/some-package'
+        version: '3.14'
+
+app_token_alias:
+    alias: app_token
+    deprecated:
+        package: 'acme/package'
+        version: '1.2'
+        message: 'the %alias_id% route alias is deprecated. do not use it anymore'
+
+doc:
+    path: /doc
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        keepQueryParams: true
+#        permanent: true
+        route: 'app_doc'
+        keepRequestMethod: true
+#        path: 'https://www.google.com'
+
+about:
+    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        template: 'about/page.html.twig'
+    path:
+        en: '/about-us'
+        fr: '/a-propos-de-nous'
+        nl: '/over-ons'
+
+
+## Internationalize
+
+app_internationalized:
+    resource: '../src/Controller'
+    type: attribute
+    host:
+        en: 'en.website.localhost'
+        fr: 'fr.website.localhost'
+        ar: 'ar.website.localhost'
+        nl: 'nl.website.localhost'
+
+localized_controllers:
+    resource: '../src/Controller/Localized'
+    type: attribute
+    prefix: /{_locale}

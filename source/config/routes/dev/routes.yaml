@@ -1,0 +1,5 @@
+dev_homepage:
+    controller: App\Controller\HomeController
+    path: "/home"
+    methods: GET|POST
+    condition: "context.getMethod() in ['POST', 'PUT'] or (env('APP_ENV') == 'dev' and service('App\\\\Matcher\\\\Routing\\\\DevRoutingMatcher').check(request))"

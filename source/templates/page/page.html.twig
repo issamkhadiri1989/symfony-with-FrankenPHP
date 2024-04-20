@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {{ path('dev_home_dashboard') }}
+
+    <br />
+
+    {{ path('app_paged_index', {page: 3}) }}
+
+    <br />
+
+    <a href="{{ url('app_order_new', {title: 'Khadiri'}) }}">Khadiri</a>
+
+    <br />
+
+    Route name: <strong>{{ app.current_route }}</strong>
+    Route params:
+    {{ dump(app.current_route_parameters) }}
+
+{% endblock %}

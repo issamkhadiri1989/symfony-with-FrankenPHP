@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TokenController!{% endblock %}
+
+{% block body %}
+{{ token }}
+    <br/>
+
+    {{ url('app_token_alias', {token: 'ipsum', _format: 'html'}) }}
+{% endblock %}

@@ -1,3 +1,6 @@
 /.idea
 /data/
 /source/.idea
+components/vendor
+/components/vendor/
+/components/.idea/

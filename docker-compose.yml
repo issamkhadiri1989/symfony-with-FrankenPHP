@@ -32,6 +32,26 @@ services:
   #      PUBLISHER_JWT_KEY: "!ChangeThisMercureHubJWTSecretKey!"
   #      SUBSCRIBER_JWT_KEY: "!ChangeThisMercureHubJWTSecretKey!"
 
+  #  component:
+  #    build:
+  #      context: .
+  #      dockerfile: ./docker/server/Dockerfile
+  #    expose:
+  #      - "9000"
+  #      - "9003"
+  #    ports:
+  #      - "6000:80"
+  #    working_dir: /var/www/html
+  #    volumes:
+  #      - ./components:/var/www/html
+  #      - ./docker/server/apache/sites-enabled:/etc/apache2/sites-enabled
+  #      - ./docker/server/php/php.ini:/usr/local/etc/php/conf.d/extra-php-config.ini
+  #      - ./docker/xdebug/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+  #    depends_on:
+  #      - database
+  #    networks:
+  #      - inner_net
+
   database:
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
@@ -87,23 +107,23 @@ services:
     #    volumes:
     #      - '/data:/home/user'
 
-  mercure:
-    networks:
-      - inner_net
-    image: dunglas/mercure
-    restart: unless-stopped
-    environment:
-      SERVER_NAME: ':80'
-      MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
-      MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
-      MERCURE_EXTRA_DIRECTIVES: 'cors_origins http://localhost:8000'
-    command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
-    ports:
-      - "9797:80"
-    volumes:
-      - caddy_data:/data
-      - caddy_config:/config
-      - ./docker/caddy/:/etc/caddy/
+    #  mercure:
+    #    networks:
+    #      - inner_net
+    #    image: dunglas/mercure
+    #    restart: unless-stopped
+    #    environment:
+    #      SERVER_NAME: ':80'
+    #      MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+    #      MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+    #      MERCURE_EXTRA_DIRECTIVES: 'cors_origins http://localhost:8000'
+    #    command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
+    #    ports:
+    #      - "9797:80"
+    #    volumes:
+    #      - caddy_data:/data
+    #      - caddy_config:/config
+    #      - ./docker/caddy/:/etc/caddy/
 
     #  mongodb:
     #    container_name: "mongodb-server"
@@ -139,50 +159,50 @@ services:
     #    networks:
     #      - inner_net
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.1
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    networks:
-      - inner_net
-    ports:
-      - 9200:9200
-    restart: always
-    environment:
-      - xpack.security.enabled=false
-      - discovery.type=single-node
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+  #  elasticsearch:
+  #    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.1
+  #    volumes:
+  #      - elasticsearch-data:/usr/share/elasticsearch/data
+  #    networks:
+  #      - inner_net
+  #    ports:
+  #      - 9200:9200
+  #    restart: always
+  #    environment:
+  #      - xpack.security.enabled=false
+  #      - discovery.type=single-node
+  #    ulimits:
+  #      memlock:
+  #        soft: -1
+  #        hard: -1
 
-  kibana:
-    depends_on:
-      - elasticsearch
-    image: docker.elastic.co/kibana/kibana:8.13.1
-    volumes:
-      - kibana-data:/usr/share/kibana/data
-    networks:
-      - inner_net
-    ports:
-      - 5601:5601
-    restart: always
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #  kibana:
+  #    depends_on:
+  #      - elasticsearch
+  #    image: docker.elastic.co/kibana/kibana:8.13.1
+  #    volumes:
+  #      - kibana-data:/usr/share/kibana/data
+  #    networks:
+  #      - inner_net
+  #    ports:
+  #      - 5601:5601
+  #    restart: always
+  #    environment:
+  #      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 
-  minio:
-    image: minio/minio
-    networks:
-      - inner_net
-    environment:
-      MINIO_ROOT_USER: access1234
-      MINIO_ROOT_PASSWORD: secret1234
-    volumes:
-      - ./data/minio:/data
-    command: server /data --console-address ":9001"
-    ports:
-      - 9000:9000
-      - 9001:9001
+  #  minio:
+  #    image: minio/minio
+  #    networks:
+  #      - inner_net
+  #    environment:
+  #      MINIO_ROOT_USER: access1234
+  #      MINIO_ROOT_PASSWORD: secret1234
+  #    volumes:
+  #      - ./data/minio:/data
+  #    command: server /data --console-address ":9001"
+  #    ports:
+  #      - 9000:9000
+  #      - 9001:9001
 
   http:
     build:
