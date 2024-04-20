@@ -1,0 +1,18 @@
+services:
+  mercure:
+    networks:
+      - inner_net
+    image: dunglas/mercure
+    restart: unless-stopped
+    environment:
+      SERVER_NAME: ':80'
+      MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+      MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+      MERCURE_EXTRA_DIRECTIVES: 'cors_origins http://localhost:8000'
+    command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
+    ports:
+      - "9797:80"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./docker/caddy/:/etc/caddy/

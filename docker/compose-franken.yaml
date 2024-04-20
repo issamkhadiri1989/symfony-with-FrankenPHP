@@ -1,0 +1,31 @@
+services:
+  franken:
+    container_name: "franken"
+    build:
+      context: .
+      dockerfile: ./docker/franken_php/Dockerfile
+    expose:
+      - "9000"
+      - "9003"
+    ports:
+      - "80:80"       # HTTP
+      - "443:443"     # HTTPS
+      - "443:443/udp" # HTTP/3
+    working_dir: /app
+    tty: true
+    volumes:
+      - ./source:/app
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./docker/server/php/php.ini:/usr/local/etc/php/conf.d/extra-php-config.ini
+      - ./docker/xdebug/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./docker/franken_php/caddy/:/etc/caddy
+    depends_on:
+      - database
+    networks:
+      - inner_net
+    environment:
+      MERCURE_PUBLISHER_JWT_KEY: "!ChangeThisMercureHubJWTSecretKey!"
+      MERCURE_SUBSCRIBER_JWT_KEY: "!ChangeThisMercureHubJWTSecretKey!"
+      PUBLISHER_JWT_KEY: "!ChangeThisMercureHubJWTSecretKey!"
+      SUBSCRIBER_JWT_KEY: "!ChangeThisMercureHubJWTSecretKey!"

@@ -1,0 +1,22 @@
+services:
+  mongodb:
+    container_name: "mongodb-server"
+    image: mongo:6-jammy
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata6:/data/db
+    networks:
+      - inner_net
+
+  mongo-express:
+    container_name: "mongo-express"
+    image: mongo-express
+    ports:
+      - '8081:8081'
+    networks:
+      - inner_net
+    environment:
+      ME_CONFIG_MONGODB_PORT: '27017'
+      ME_CONFIG_MONGODB_SERVER: 'mongodb'
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'

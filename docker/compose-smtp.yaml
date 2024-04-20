@@ -1,0 +1,9 @@
+services:
+  mailcatcher:
+    container_name: "smtp-server"
+    networks:
+      - inner_net
+    image: yappabe/mailcatcher
+    ports:
+      - 1025:1025
+      - 1080:1080
