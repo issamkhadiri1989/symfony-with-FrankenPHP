@@ -58,3 +58,7 @@ localized_controllers:
     resource: '../src/Controller/Localized'
     type: attribute
     prefix: /{_locale}
+
+localized:
+    controller : 'App/Controller/Command/MyCommandController'
+    path: "/command/example"

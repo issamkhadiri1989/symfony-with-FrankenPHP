@@ -1,4 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
+    <script>
+        const route = "{{ path('app_wave', {slug: 'my-blog-post'})|escape('js') }}";
+    </script>
 
 {% endblock %}
