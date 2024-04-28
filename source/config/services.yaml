@@ -36,3 +36,17 @@ services:
 
   App\Elasticsearch\Finder\ArticleFinder:
     arguments: ["@fos_elastica.index.articles"]
+
+  Symfony\Component\Ldap\Ldap:
+    arguments: [ '@Symfony\Component\Ldap\Adapter\ExtLdap\Adapter' ]
+    tags:
+      - ldap
+
+  Symfony\Component\Ldap\Adapter\ExtLdap\Adapter:
+    arguments:
+      - host: 'openldap'
+        port: 389
+#        encryption: tls
+#        options:
+#          protocol_version: 3
+#          referrals: false

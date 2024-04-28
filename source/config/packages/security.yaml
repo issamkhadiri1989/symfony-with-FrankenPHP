@@ -1,17 +1,45 @@
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'plaintext'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        custom_ldap_provider:
+            id: App\Security\Ldap\User\Provider\LdapUserProvider
+
+        ldap_user_provider:
+            ldap:
+                service: Symfony\Component\Ldap\Ldap
+                base_dn: dc=ramhlocal,dc=com
+                search_dn: "cn=admin,dc=ramhlocal,dc=com"
+                search_password: 'admin_pass'
+                default_roles: ROLE_USER
+                uid_key: uid
+                extra_fields: [ 'mail', 'userPassword' ]
+                password_attribute: 'userPassword'
+
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            provider: ldap_user_provider
+            custom_authenticator: App\Security\LdapLoginFormAuthenticator
+#            form_login_ldap:
+#                check_path: app_security
+#                login_path: app_security
+#                service: Symfony\Component\Ldap\Ldap
+#                dn_string: 'uid={user_identifier},dc=ramhlocal,dc=com'
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -24,6 +52,7 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+#         - { path: ^/ldap, roles: ROLE_USER }
 
 when@test:
     security:

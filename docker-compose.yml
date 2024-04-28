@@ -78,142 +78,183 @@ services:
     ports:
       - 9292:9200
 
-  mongodb:
-    image: mongo:6-jammy
-    ports:
-      - '27017:27017'
-    volumes:
-      - dbdata6:/data/db
-    networks:
-      - inner_net
+#  mongodb:
+#    image: mongo:6-jammy
+#    ports:
+#      - '27017:27017'
+#    volumes:
+#      - dbdata6:/data/db
+#    networks:
+#      - inner_net
+#
+#  mongo-express:
+#    image: mongo-express
+#    ports:
+#      - '8081:8081'
+#    networks:
+#      - inner_net
+#    environment:
+#      ME_CONFIG_MONGODB_PORT: '27017'
+#      ME_CONFIG_MONGODB_SERVER: 'mongodb'
+#      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
 
-  mongo-express:
-    image: mongo-express
+#  graylog:
+#    image: "graylog/graylog:5.2.6"
+#    depends_on:
+#      - opensearch
+#      - mongodb
+#    entrypoint: "/usr/bin/tini -- wait-for-it opensearch:9200 --  /docker-entrypoint.sh"
+#    environment:
+#      GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/config/node-id"
+#      GRAYLOG_PASSWORD_SECRET: somepasswordpepper
+#      # to generate a password hash, type: echo -n admin | shasum -a 256
+#      GRAYLOG_ROOT_PASSWORD_SHA2: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+#      GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9001"
+#      GRAYLOG_HTTP_EXTERNAL_URI: "http://localhost:9001/"
+#      GRAYLOG_ELASTICSEARCH_HOSTS: "http://opensearch:9200"
+#      GRAYLOG_MONGODB_URI: "mongodb://mongodb:27017/graylog"
+#    ports:
+#      - "5044:5044/tcp"   # Beats
+#      - "5140:5140/udp"   # Syslog
+#      - "5140:5140/tcp"   # Syslog
+#      - "5555:5555/tcp"   # RAW TCP
+#      - "5555:5555/udp"   # RAW TCP
+#      - "9001:9001/tcp"   # Server API
+#      - "12201:12201/tcp" # GELF TCP
+#      - "12201:12201/udp" # GELF UDP
+#      - "13301:13301/tcp" # Forwarder data
+#      - "13302:13302/tcp" # Forwarder config
+#    networks:
+#      - inner_net
+
+#  opensearch:
+#    image: "opensearchproject/opensearch:2.4.0"
+#    environment:
+#      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
+#      - "bootstrap.memory_lock=true"
+#      - "discovery.type=single-node"
+#      - "action.auto_create_index=false"
+#      - "plugins.security.ssl.http.enabled=false"
+#      - "plugins.security.disabled=true"
+#    ulimits:
+#      memlock:
+#        hard: -1
+#        soft: -1
+#      nofile:
+#        soft: 65536
+#        hard: 65536
+#    volumes:
+#      - "os_data:/usr/share/opensearch/data"
+#    ports:
+#      - 9200:9200
+#    networks:
+#      - inner_net
+
+#  ftp-server:
+#    networks:
+#      - inner_net
+#    environment:
+#      - FTP_PASS=123
+#      - FTP_USER=user
+#    image: garethflowers/ftp-server
+#    ports:
+#      - '20-21:20-21/tcp'
+#      - '40000-40009:40000-40009/tcp'
+#    volumes:
+#      - '/data:/home/user'
+#
+#  rabbitmq:
+#    container_name: "rabbitmq_server"
+#    image: rabbitmq:3-management-alpine
+#    environment:
+#      - RABBITMQ_DEFAULT_USER=guest
+#      - RABBITMQ_DEFAULT_PASS=guest
+#    ports:
+#      - 5672:5672 # port to use when writing
+#      - 15672:15672 #port to use for UI admin
+#    networks:
+#      - inner_net
+
+#  mailcatcher:
+#    networks:
+#      - inner_net
+#    image: yappabe/mailcatcher
+#    ports:
+#      - 1025:1025
+#      - 1080:1080
+
+#  minio:
+#    image: minio/minio
+#    networks:
+#      - inner_net
+#    environment:
+#      MINIO_ROOT_USER: access1234
+#      MINIO_ROOT_PASSWORD: secret1234
+#    volumes:
+#      - ./data/minio:/data
+#    command: server /data --console-address ":9001"
+#    ports:
+#      - 9000:9000
+#      - 9003:9001
+
+#  mercure:
+#    networks:
+#      - inner_net
+#    image: dunglas/mercure
+#    restart: unless-stopped
+#    environment:
+#      SERVER_NAME: ':80'
+#      MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+#      MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+#      MERCURE_EXTRA_DIRECTIVES: 'cors_origins http://localhost:8000'
+#    command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
+#    ports:
+#      - "9797:80"
+#    volumes:
+#      - caddy_data:/data
+#      - caddy_config:/config
+#      - ./docker/caddy/:/etc/caddy/
+
+  openldap:
+    image: osixia/openldap:latest
+    container_name: 'ldap_server'
+    hostname: 'openldap'
     ports:
-      - '8081:8081'
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ./data/certificates:/container/service/slapd/assets/certs
+      - ./data/slapd/database:/var/lib/ldap
+      - ./data/slapd/config:/etc/ldap/slapd.d
     networks:
       - inner_net
     environment:
-      ME_CONFIG_MONGODB_PORT: '27017'
-      ME_CONFIG_MONGODB_SERVER: 'mongodb'
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
+      - LDAP_ORGANISATION=ramhlocal
+      - LDAP_DOMAIN=ramhlocal.com
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=admin_pass
+      - LDAP_CONFIG_PASSWORD=config_pass
+      - "LDAP_BASE_DN=dc=ramhlocal,dc=com"
+      - LDAP_TLS_CRT_FILENAME=server.crt
+      - LDAP_TLS_KEY_FILENAME=server.key
+      - LDAP_TLS_CA_CRT_FILENAME=ramhlocal.com.ca.crt
+      - LDAP_READONLY_USER=true
+      - LDAP_READONLY_USER_USERNAME=user-ro
+      - LDAP_READONLY_USER_PASSWORD=ro_pass
 
-  graylog:
-    image: "graylog/graylog:5.2.6"
+  phpldapadmin:
+    container_name: 'phpldapadmin'
+    image: osixia/phpldapadmin:latest
+    hostname: 'phpldapadmin'
+    ports:
+      - "8082:80"
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      - PHPLDAPADMIN_HTTPS=false
     depends_on:
-      - opensearch
-      - mongodb
-    entrypoint: "/usr/bin/tini -- wait-for-it opensearch:9200 --  /docker-entrypoint.sh"
-    environment:
-      GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/config/node-id"
-      GRAYLOG_PASSWORD_SECRET: somepasswordpepper
-      # to generate a password hash, type: echo -n admin | shasum -a 256
-      GRAYLOG_ROOT_PASSWORD_SHA2: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-      GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9001"
-      GRAYLOG_HTTP_EXTERNAL_URI: "http://localhost:9001/"
-      GRAYLOG_ELASTICSEARCH_HOSTS: "http://opensearch:9200"
-      GRAYLOG_MONGODB_URI: "mongodb://mongodb:27017/graylog"
-    ports:
-      - "5044:5044/tcp"   # Beats
-      - "5140:5140/udp"   # Syslog
-      - "5140:5140/tcp"   # Syslog
-      - "5555:5555/tcp"   # RAW TCP
-      - "5555:5555/udp"   # RAW TCP
-      - "9001:9001/tcp"   # Server API
-      - "12201:12201/tcp" # GELF TCP
-      - "12201:12201/udp" # GELF UDP
-      - "13301:13301/tcp" # Forwarder data
-      - "13302:13302/tcp" # Forwarder config
+      - openldap
     networks:
       - inner_net
-
-  opensearch:
-    image: "opensearchproject/opensearch:2.4.0"
-    environment:
-      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
-      - "bootstrap.memory_lock=true"
-      - "discovery.type=single-node"
-      - "action.auto_create_index=false"
-      - "plugins.security.ssl.http.enabled=false"
-      - "plugins.security.disabled=true"
-    ulimits:
-      memlock:
-        hard: -1
-        soft: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    volumes:
-      - "os_data:/usr/share/opensearch/data"
-    ports:
-      - 9200:9200
-    networks:
-      - inner_net
-
-  ftp-server:
-    networks:
-      - inner_net
-    environment:
-      - FTP_PASS=123
-      - FTP_USER=user
-    image: garethflowers/ftp-server
-    ports:
-      - '20-21:20-21/tcp'
-      - '40000-40009:40000-40009/tcp'
-    volumes:
-      - '/data:/home/user'
-
-  rabbitmq:
-    container_name: "rabbitmq_server"
-    image: rabbitmq:3-management-alpine
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    ports:
-      - 5672:5672 # port to use when writing
-      - 15672:15672 #port to use for UI admin
-    networks:
-      - inner_net
-
-  mailcatcher:
-    networks:
-      - inner_net
-    image: yappabe/mailcatcher
-    ports:
-      - 1025:1025
-      - 1080:1080
-
-  minio:
-    image: minio/minio
-    networks:
-      - inner_net
-    environment:
-      MINIO_ROOT_USER: access1234
-      MINIO_ROOT_PASSWORD: secret1234
-    volumes:
-      - ./data/minio:/data
-    command: server /data --console-address ":9001"
-    ports:
-      - 9000:9000
-      - 9003:9001
-
-  mercure:
-    networks:
-      - inner_net
-    image: dunglas/mercure
-    restart: unless-stopped
-    environment:
-      SERVER_NAME: ':80'
-      MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
-      MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
-      MERCURE_EXTRA_DIRECTIVES: 'cors_origins http://localhost:8000'
-    command: /usr/bin/caddy run --config /etc/caddy/Caddyfile.dev
-    ports:
-      - "9797:80"
-    volumes:
-      - caddy_data:/data
-      - caddy_config:/config
-      - ./docker/caddy/:/etc/caddy/
 
 volumes:
   db_data:

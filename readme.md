@@ -31,3 +31,28 @@
 ## Mongo Express
 * http://localhost:8081/ : Mongo Express 
 > dmin / pass
+
+## LDAP
+* PHP LDAP ADMIN: http://localhost:8082
+> cn=admin,dc=ramhlocal,dc=com  / admin_pass
+
+-- Documentations: 
+Create users / Organizations
+
+### Home
+![](doc/ldap/img001.png)
+
+### Create new Organization Unit
+![](doc/ldap/img002.png)
+
+### Create new User Account
+![](doc/ldap/img003.png)
+> for the password, i used the CLEAR option
+
+For things to work, I wanted to add some other attributes (like in source/config/packages/security.yaml).
+ see 
+```security.providers.ldap_user_provider.ldap.extra_fields```
+
+To connect user, I used the uid (user name)
+![](doc/ldap/img004.png)
+

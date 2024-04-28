@@ -1,4 +1,4 @@
-FROM lavoweb/php-8.3
+ FROM lavoweb/php-8.3
 
 RUN a2enmod rewrite
 # RUN apt-get update && apt-get install -y git unzip zip
@@ -38,5 +38,8 @@ RUN docker-php-ext-install xsl
 
 # Install Nodejs
 RUN apt install -y nodejs npm
+
+# Install LDAP
+RUN apt update && apt install -y libldap2-dev && docker-php-ext-install ldap && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8585
