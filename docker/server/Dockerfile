@@ -28,18 +28,19 @@ RUN docker-php-ext-install xsl
 #RUN apt install symfony-cli
 
 # Install MongoDb
-#RUN pecl install mongodb
-#RUN echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
+# RUN pecl install mongodb
+# RUN echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
 
 ## PHP AMQP
-#RUN apt-get install -y librabbitmq-dev libssl-dev
-#RUN pecl install amqp
-#RUN docker-php-ext-enable amqp
+# RUN apt-get install -y librabbitmq-dev libssl-dev
+# RUN pecl install amqp
+# RUN docker-php-ext-enable amqp
 
 # Install Nodejs
-RUN apt install -y nodejs npm
+# RUN apt install -y nodejs npm
 
 # Install LDAP
 RUN apt update && apt install -y libldap2-dev && docker-php-ext-install ldap && rm -rf /var/lib/apt/lists/*
+RUN docker-php-ext-enable ldap
 
 EXPOSE 8585
