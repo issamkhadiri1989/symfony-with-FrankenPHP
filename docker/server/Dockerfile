@@ -1,5 +1,9 @@
 FROM lavoweb/php-8.3
 
+RUN echo "Acquire::Check-Valid-Until \"false\";\nAcquire::Check-Date \"false\";" | cat > /etc/apt/apt.conf.d/10no--check-valid-until
+
+RUN apt upgrade -y
+
 RUN a2enmod rewrite
 # RUN apt-get update && apt-get install -y git unzip zip
 WORKDIR /var/www/html
@@ -21,7 +25,7 @@ RUN docker-php-ext-install xsl
 #RUN apt-get update && apt-get install -y cron
 
 # Install Xdebug
-#RUN pecl install xdebug-3.3.1 && docker-php-ext-enable xdebug
+RUN pecl install xdebug-3.3.1 && docker-php-ext-enable xdebug
 
 # Install Symfony cli
 #RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
@@ -37,6 +41,6 @@ RUN docker-php-ext-install xsl
 #RUN docker-php-ext-enable amqp
 
 # Install Nodejs
-RUN apt install -y nodejs npm
+# RUN apt install -y nodejs npm
 
 EXPOSE 8585

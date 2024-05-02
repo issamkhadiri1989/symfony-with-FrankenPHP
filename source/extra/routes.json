@@ -1,0 +1,11 @@
+{
+  "route_name": {
+    "host": "{_locale}.example.com.local",
+    "requirements": {
+      "_locale": "en|fr"
+    },
+    "defaults": {
+      "_locale": "en"
+    }
+  }
+}

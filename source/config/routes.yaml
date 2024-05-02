@@ -62,3 +62,11 @@ localized_controllers:
 localized:
     controller : 'App/Controller/Command/MyCommandController'
     path: "/command/example"
+
+custom_route_loader:
+    resource: App\Service\Routing\RouteLoader::load
+    type: service
+
+json_routes:
+    resource: '../extra/routes.json'
+    type: json

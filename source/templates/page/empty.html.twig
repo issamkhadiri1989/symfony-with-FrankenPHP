@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <script>
+{#    <script>
         const route = "{{ path('app_wave', {slug: 'my-blog-post'})|escape('js') }}";
-    </script>
+    </script>#}
+    <h3>Follow the link bellow</h3>
+{{ url('extra_route', {parameter: 1234}) }}
 
 {% endblock %}

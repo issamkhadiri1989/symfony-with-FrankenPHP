@@ -37,3 +37,6 @@ services:
 
   App\Elasticsearch\Finder\ArticleFinder:
     arguments: ["@fos_elastica.index.articles"]
+
+  App\Loader\Route\CustomRouteLoader:
+    tags: ['routing.loader']
